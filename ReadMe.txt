@@ -1,0 +1,2 @@
+﻿Add-migration Book_obj -context Book_Rental_webAPIDatabase
+Update-Database Book_obj -context Book_Rental_webAPIDatabase
