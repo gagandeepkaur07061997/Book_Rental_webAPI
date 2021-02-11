@@ -57,7 +57,7 @@
 
                         </div>
                         <div class="form-group">
-                            <label for="author_Name">Author Name</label>
+                            <label for="author_Name"> Author Name</label>
                             <input type="text" class="form-control" id="author_Name" aria-describedby="author_ NameHelp" placeholder="Author Name">
 
                         </div>
@@ -85,10 +85,191 @@
         </div>
     </div>
 
-    <! -- java script files that will help to link the front end and back end -->
+    <!-- below mentioned code will create the template to update a new book -->
+    <div class="modal" tabindex="-1" role="dialog" id="UpdateBooks">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Update Books</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form>
+                        <div class="form-group">
+
+                            <input type="hidden" class="form-control" id="Update_id" aria-describedby="IdHelp">
+
+                        </div>
+                        <div class="form-group">
+                            <label for="book_Title">Book Title</label>
+                            <input type="text" class="form-control" id="Update_book_Title" aria-describedby="book_TitleHelp">
+
+                        </div>
+                        <div class="form-group">
+                            <label for="Book_Discription">Book Discription</label>
+                            <input type="text" class="form-control" id="Update_book_Discription" aria-describedby="book_DiscriptionHelp">
+
+                        </div>
+                        <div class="form-group">
+                            <label for="author_Name"> Author Name</label>
+                            <input type="text" class="form-control" id="Update_author_Name" aria-describedby="author_ NameHelp">
+
+                        </div>
+                        <div class="form-group">
+                            <label for="Email id">Email id</label>
+                            <input type="text" class="form-control" id="Update_email_id" aria-describedby="Email.idHelp">
+                        </div>
+                        <div class="form-group">
+                            <label for="Price">Price</label>
+                            <input type="number" class="form-control" id="Update_price" aria-describedby="PriceHelp">
+                        </div>
+
+                        <div class="form-group" id="update_result">
+
+
+                        </div>
+                        <button type="button" class="btn btn-primary" onclick="UpdateBooks()">Update</button>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+
+                   
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- java script files that will help to link the front end and back end-->
     <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-2.0.3.min.js"></script>
     <script src="https://ajax.aspnetcdn.com/ajax/jquery.templates/beta1/jquery.tmpl.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+
+    <script>
+        var uri = 'api/Books';
+
+        //Java script main function so JS start from here
+        $(document).ready(function () {
+            $.getJSON(uri)
+                .done(function (data) {
+                    $("#BooksTemplate").tmpl(data).appendTo("#allBooks");
+                });
+        });
+        // function to get all books data and show on web page
+        function getAllBooks() {
+            $.getJSON(uri)
+                .done(function (data) {
+                    $("#allBooks").text("");
+                    $("#BooksTemplate").tmpl(data).appendTo("#allBooks");
+                });
+        }
+
+        // function to add data for new book
+        function addBooks() {
+            var _book_Title = $('#book_Title').val();
+            var _book_Discription = $('#book_Discription').val();
+            var _author_Name = $('#author_Name').val();
+            var _email_id = $('#email_id').val();
+            var _price = parseFloat($('#price').val());
+            var Book = {
+                book_Tittle: _book_Title,
+                book_Discription: _book_Discription,
+                author_Name: _author_Name,
+                email_Id: _email_id,
+                price: _price
+            };
+            $.ajax({
+                type: "POST",
+                url: uri,
+                data: JSON.stringify(Book),
+                contentType: "application/json; charset=utf-8"
+            }).done(function (response) {
+                $("#result").html("Sucessfuly added");
+                getAllBooks();
+            }).fail(function (jqXHR, textStatus) {
+                $("#result").html("Something wrong.");
+            });
+        }
+
+        //funtion to delete a particular book based on id//
+        function remove(id) {
+            var yes = confirm("Please confirm to delete this Book?");
+            if (yes) {
+                $.ajax({
+                    type: "DELETE",
+                    url: uri + "/" + id,
+                }).done(function (response) {
+                    getAllBooks();
+                });
+            }
+        }
+         // funtion to fill the data into update template//
+        function getbookForUpdate(id) {
+            $.ajax({
+                type: "GET",
+                url: uri + "/" + id,
+                contentType: "application/json"
+            }).done(function (response) {
+                $('#Update_id').val(response.id);
+                $('#Update_book_Title').val(response.book_Tittle);
+                $('#Update_book_Discription').val(response.book_Discription);
+                $('#Update_author_Name').val(response.author_Name);
+                $('#Update_email_id').val(response.email_Id);
+                $('#Update_price').val(response.price);
+            });
+        }
+
+        // function to update data of the book
+        function UpdateBooks() {
+            var _book_Tittle = $('#update_book_Title').val();
+            var _book_Discription = $('#update_book_Discription').val();
+            var _author_Name = $('#update_author_Name').val();
+            var _email_Id = $('#update_email_id').val();
+            var _price = parseFloat($('#update_price').val());
+            var BookUpdate = {
+                id: parseFloat( $('#Update_id').val()),
+                book_Tittle: _book_Title,
+                book_Discription: _book_Discription,
+                author_Name: _author_Name,
+                email_Id: _email_Id,
+                price: _price
+            };
+
+            $.ajax({
+                type: "PUT",
+                url: uri + "/" + $('#Update_id').val(),
+                data: JSON.stringify(BookUpdate),
+                contentType: "application/json; charset=utf-8"
+            }).done(function (response) {
+                $("#update_result").html("Success");
+                getAllBooks();
+            }).fail(function (jqXHR, textStatus) {
+                $("#update_result").html("Something wrong in updating book.");
+            });
+        }
+    </script>
+
+    <!-- below mentioned code will create the template on the web page to display all books -->
+    <script id="BooksTemplate" type="text/x-jquery-tmpl">
+        <div class="col-lg-3" style="margin:10px;">
+            <div class="card card text-white bg-dark border-warning mb-3" style="width: 18rem; padding:20px">
+                <div class="card-body">
+                    <h5 class="card-title">Book Title: ${book_Tittle}</h5>
+                    <p class="card-text">Book Discription :  ${book_Discription}</p>
+                    <p class="card-text">>Author Name : ${author_Name}</p>
+                    <p class="card-text">Email id : ${email_Id}</p>
+                    <p class="card-text">Price : ${price}</p>
+                </div>
+                <span>
+                    <button class="btn btn-primary" onclick="getbookForUpdate('${id}')" data-toggle="modal" data-target="#UpdateBooks">Update</button>
+                    <a href="#" class="btn btn-danger" onclick="remove('${id}')">Delete</a>
+                </span>
+            </div>
+        </div>
+    </script>
+
 </body>
-</html>
+</html >
