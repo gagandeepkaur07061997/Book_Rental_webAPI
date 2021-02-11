@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace Book_Rental_webAPI.Model
+namespace Book_Rental_webAPI.Model //code for Book class about the details of Book like id,tittlt, discription and other// 
 {
     public class Book
     {

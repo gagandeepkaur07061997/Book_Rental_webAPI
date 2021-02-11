@@ -9,7 +9,7 @@
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
 </head>
 
-<body style="background-color:burlywood;">
+<body style="background-color:khaki;">
 
     <div>
         <!-- Navigation bar code -->
@@ -175,6 +175,7 @@
             var _email_id = $('#email_id').val();
             var _price = parseFloat($('#price').val());
             var Book = {
+                
                 book_Tittle: _book_Title,
                 book_Discription: _book_Discription,
                 author_Name: _author_Name,
@@ -224,14 +225,14 @@
 
         // function to update data of the book
         function UpdateBooks() {
-            var _book_Tittle = $('#update_book_Title').val();
-            var _book_Discription = $('#update_book_Discription').val();
-            var _author_Name = $('#update_author_Name').val();
-            var _email_Id = $('#update_email_id').val();
-            var _price = parseFloat($('#update_price').val());
-            var BookUpdate = {
-                id: parseFloat( $('#Update_id').val()),
-                book_Tittle: _book_Title,
+            var _book_Tittle = $('#Update_book_Title').val();
+            var _book_Discription = $('#Update_book_Discription').val();
+            var _author_Name = $('#Update_author_Name').val();
+            var _email_Id = $('#Update_email_id').val();
+            var _price = parseFloat($('#Update_price').val());
+            var BooksUpdate = {
+                id: parseInt( $('#Update_id').val()),
+                book_Tittle: _book_Tittle,
                 book_Discription: _book_Discription,
                 author_Name: _author_Name,
                 email_Id: _email_Id,
@@ -241,7 +242,7 @@
             $.ajax({
                 type: "PUT",
                 url: uri + "/" + $('#Update_id').val(),
-                data: JSON.stringify(BookUpdate),
+                data: JSON.stringify(BooksUpdate),
                 contentType: "application/json; charset=utf-8"
             }).done(function (response) {
                 $("#update_result").html("Success");
@@ -254,12 +255,12 @@
 
     <!-- below mentioned code will create the template on the web page to display all books -->
     <script id="BooksTemplate" type="text/x-jquery-tmpl">
-        <div class="col-lg-3" style="margin:10px;">
+        <div class="col-lg-3" style="margin:15px;">
             <div class="card card text-white bg-dark border-warning mb-3" style="width: 18rem; padding:20px">
                 <div class="card-body">
                     <h5 class="card-title">Book Title: ${book_Tittle}</h5>
                     <p class="card-text">Book Discription :  ${book_Discription}</p>
-                    <p class="card-text">>Author Name : ${author_Name}</p>
+                    <p class="card-text">Author Name : ${author_Name}</p>
                     <p class="card-text">Email id : ${email_Id}</p>
                     <p class="card-text">Price : ${price}</p>
                 </div>
